@@ -46,13 +46,13 @@ const FlipCard: React.FC<{ className?: string }> = ({ className = "" }) => {
       <div className="relative h-full w-full transition-all duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
         {/* Front Side */}
         <div className="absolute inset-0 [backface-visibility:hidden]">
-          <BentoCard className="h-full w-full flex items-end p-8">
-            <div className="absolute top-4 right-4 md:top-8 md:right-8 z-30">
-              <div className="rounded-full p-3 transition-transform duration-500 group-hover:rotate-45 shadow-lg" style={{ backgroundColor: BRAND_BLACK }}>
-                <ArrowUpRight style={{ color: BRAND_RED }} className="w-5 h-5 md:w-7 md:h-7" />
+          <BentoCard className="h-full w-full flex items-end p-6 md:p-8">
+            <div className="absolute top-4 right-4 md:top-6 md:right-6 z-30">
+              <div className="rounded-full p-2 transition-transform duration-500 group-hover:rotate-45 shadow-lg" style={{ backgroundColor: BRAND_BLACK }}>
+                <ArrowUpRight style={{ color: BRAND_RED }} className="w-5 h-5 md:w-6 md:h-6" />
               </div>
             </div>
-            <span className="text-anton text-7xl lg:text-[10rem] xl:text-[12rem] leading-[0.75] lowercase select-none tracking-tighter" style={{ color: BRAND_BLACK }}>
+            <span className="text-anton text-6xl md:text-8xl lg:text-[7rem] xl:text-[8rem] leading-[0.8] lowercase select-none tracking-tight" style={{ color: BRAND_BLACK }}>
               .links
             </span>
           </BentoCard>
@@ -151,13 +151,13 @@ const App: React.FC = () => {
         </BentoCard>
 
         {/* Bottom Right: Folio */}
-        <BentoCard className="md:col-span-2 row-span-1 md:row-span-1 flex items-end p-8 group hover:scale-[1.01]">
-          <div className="absolute top-4 right-4 md:top-8 md:right-8 z-30">
-            <div className="rounded-full p-3 transition-transform duration-500 group-hover:rotate-45 shadow-lg" style={{ backgroundColor: BRAND_BLACK }}>
-              <ArrowUpRight style={{ color: BRAND_RED }} className="w-5 h-5 md:w-7 md:h-7" />
+        <BentoCard className="md:col-span-2 row-span-1 md:row-span-1 flex items-end p-6 md:p-8 group hover:scale-[1.01]">
+          <div className="absolute top-4 right-4 md:top-6 md:right-6 z-30">
+            <div className="rounded-full p-2 transition-transform duration-500 group-hover:rotate-45 shadow-lg" style={{ backgroundColor: BRAND_BLACK }}>
+              <ArrowUpRight style={{ color: BRAND_RED }} className="w-5 h-5 md:w-6 md:h-6" />
             </div>
           </div>
-          <span className="text-anton text-7xl lg:text-[10rem] xl:text-[12rem] leading-[0.75] lowercase select-none tracking-tighter" style={{ color: BRAND_BLACK }}>
+          <span className="text-anton text-6xl md:text-8xl lg:text-[7rem] xl:text-[8rem] leading-[0.8] lowercase select-none tracking-tight" style={{ color: BRAND_BLACK }}>
             .folio
           </span>
         </BentoCard>
