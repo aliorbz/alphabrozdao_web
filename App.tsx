@@ -1,5 +1,5 @@
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { ArrowUpRight, Mail } from 'lucide-react';
 
 /**
@@ -88,8 +88,15 @@ const FlipCard: React.FC<{ className?: string }> = ({ className = "" }) => {
 
 const App: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
     const playVideo = () => {
       if (videoRef.current) {
         videoRef.current.play().catch((err) => {
@@ -100,12 +107,24 @@ const App: React.FC = () => {
     
     playVideo();
     window.addEventListener('mousedown', playVideo, { once: true });
-    return () => window.removeEventListener('mousedown', playVideo);
+    return () => {
+      window.removeEventListener('mousedown', playVideo);
+      window.removeEventListener('resize', checkMobile);
+    };
   }, []);
 
   return (
-    <div className="h-screen w-screen flex items-center justify-center p-4 md:p-8 overflow-hidden font-anton" style={{ backgroundColor: BRAND_BLACK }}>
-      <div className="w-full h-full max-w-[1800px] grid grid-cols-1 md:grid-cols-6 grid-rows-6 md:grid-rows-2 gap-4 md:gap-8">
+    <div 
+      className={`${isMobile ? 'min-h-screen py-8' : 'h-screen'} w-screen flex items-center justify-center p-4 md:p-8 overflow-x-hidden font-anton`} 
+      style={{ backgroundColor: BRAND_BLACK }}
+    >
+      <div 
+        className={`w-full h-full max-w-[1800px] grid gap-4 md:gap-8 
+          ${isMobile 
+            ? 'grid-cols-1 auto-rows-[250px]' 
+            : 'grid-cols-6 grid-rows-2'
+          }`}
+      >
         
         {/* Top Left: Main Animated Logo Card */}
         <BentoCard className="md:col-span-2 row-span-2 md:row-span-1 flex items-center justify-center relative bg-black">
