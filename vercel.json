@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/brozfolios/:slug",
+      "destination": "/brozfolios/:slug/",
+      "permanent": true
+    }
+  ]
+}
