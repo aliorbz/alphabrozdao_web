@@ -112,7 +112,7 @@ const styles: Record<string, React.CSSProperties> = {
   panel: {
     width: "calc(100vw - 36px)",
     maxWidth: 1800,
-    height: "min(560px, calc(100vh - 36px))",
+    height: "calc(100vh - 36px)",
     background: "#E14A3A",
     borderRadius: 22,
     padding: 18,
