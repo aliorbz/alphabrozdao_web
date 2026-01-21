@@ -132,7 +132,7 @@ if (page === "folio") {
 
   return (
     <div 
-      className={`${isMobile ? 'min-h-screen py-8' : 'h-screen'} w-screen flex items-center justify-center p-4 md:p-8 overflow-x-hidden font-anton`} 
+      className={`${isMobile ? 'min-h-screen py-8' : 'h-screen'} w-screen flex items-center justify-center p-4 md:p-8 overflow-hidden font-anton`} 
       style={{ backgroundColor: BRAND_BLACK }}
     >
       <div 

@@ -39,7 +39,7 @@ export default function FolioSearch({ onClose }: Props) {
 
   const openFolio = (item: Brozfolio) => {
     // Important for local dev: prevents Vite fallback to main app
-    window.location.href = `/brozfolios/${item.slug}/`;
+    window.location.href = `/brozfolios/${item.slug}`;
   };
 
   return (
