@@ -170,7 +170,7 @@ const styles: Record<string, React.CSSProperties> = {
   // Card fills available column width
   card: {
     width: "100%",
-    height: 270,
+    height: 370,
     borderRadius: 18,
     border: "none",
     background: "#323232",
