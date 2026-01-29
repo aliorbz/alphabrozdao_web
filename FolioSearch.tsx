@@ -40,11 +40,8 @@ export default function FolioSearch({ onClose }: Props) {
   }, [q, all]);
 
   const openFolio = (item: Brozfolio) => {
-    if (item.url) {
-      window.location.href = item.url;
-    } else {
-      window.location.href = `/brozfolios/${item.slug}`;
-    }
+    const destination = item.url || `/brozfolios/${item.slug}`;
+    window.open(destination, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -158,21 +155,17 @@ const styles: Record<string, React.CSSProperties> = {
     overflow: "auto",
     paddingRight: 4,
   },
-
-  // Grid layouts
   gridBase: {
     display: "grid",
     gap: 14,
     alignItems: "stretch",
   },
   gridDesktop: {
-    gridTemplateColumns: "repeat(5, minmax(0, 1fr))", // 5 cards per row on desktop
+    gridTemplateColumns: "repeat(5, minmax(0, 1fr))",
   },
   gridMobile: {
-    gridTemplateColumns: "repeat(2, minmax(0, 1fr))", // 2 cards per row on mobile
+    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
   },
-
-  // Card fills available column width
   card: {
     width: "100%",
     height: "95%",
@@ -198,6 +191,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: "rgba(255,255,255,0.95)",
     fontSize: "3.7vh",
     letterSpacing:"1px",
+    fontFamily: "'Anton', sans-serif",
   },
   empty: {
     color: "rgba(255,255,255,0.9)",
@@ -214,5 +208,6 @@ const styles: Record<string, React.CSSProperties> = {
     background: "rgba(0,0,0,0.28)",
     color: "rgba(255,255,255,0.95)",
     cursor: "pointer",
+    fontFamily: "'Anton', sans-serif",
   },
 };
