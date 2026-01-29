@@ -1,6 +1,7 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import { ArrowUpRight, Mail } from 'lucide-react';
+import FolioSearch from "./FolioSearch";
 
 /**
  * Custom X (Twitter) icon
@@ -25,13 +26,19 @@ const PATTERN_SRC = "https://i.ibb.co.com/LDDWcBFs/Picsart-26-01-17-18-12-50-427
 const BRAND_RED = "#ff4e46";
 const BRAND_BLACK = "#323232";
 
-const BentoCard: React.FC<{ 
-  children: React.ReactNode, 
-  className?: string,
-  style?: React.CSSProperties
-}> = ({ children, className = "", style = {} }) => {
+type BentoCardProps = React.HTMLAttributes<HTMLDivElement> & {
+  style?: React.CSSProperties;
+};
+
+const BentoCard: React.FC<BentoCardProps> = ({
+  children,
+  className = "",
+  style = {},
+  ...props
+}) => {
   return (
-    <div 
+    <div
+      {...props}
       className={`relative rounded-[16px] overflow-hidden transition-all duration-500 shadow-2xl ${className}`}
       style={{ backgroundColor: BRAND_RED, ...style }}
     >
@@ -113,9 +120,19 @@ const App: React.FC = () => {
     };
   }, []);
 
+
+
+const [page, setPage] = useState<"home" | "folio">("home");
+
+if (page === "folio") {
+  return <FolioSearch onClose={() => setPage("home")} />;
+}
+
+
+
   return (
     <div 
-      className={`${isMobile ? 'min-h-screen py-8' : 'h-screen'} w-screen flex items-center justify-center p-4 md:p-8 overflow-x-hidden font-anton`} 
+      className={`${isMobile ? 'min-h-screen py-8' : 'h-screen'} w-screen flex items-center justify-center p-4 md:p-8 overflow-hidden font-anton`} 
       style={{ backgroundColor: BRAND_BLACK }}
     >
       <div 
@@ -170,7 +187,11 @@ const App: React.FC = () => {
         </BentoCard>
 
         {/* Bottom Right: Folio */}
-        <BentoCard className="md:col-span-2 row-span-1 md:row-span-1 flex items-end p-6 md:p-8 group hover:scale-[1.01]">
+        <BentoCard
+                onClick={() => {
+                  console.log("folio clicked");
+                  setPage("folio");}}
+                className="md:col-span-2 row-span-1 md:row-span-1 flex items-end p-6 md:p-8 group hover:scale-[1.01] cursor-pointer">
           <div className="absolute top-4 right-4 md:top-6 md:right-6 z-30">
             <div className="rounded-full p-2 transition-transform duration-500 group-hover:rotate-45 shadow-lg" style={{ backgroundColor: BRAND_BLACK }}>
               <ArrowUpRight style={{ color: BRAND_RED }} className="w-5 h-5 md:w-6 md:h-6" />
