@@ -1,5 +1,6 @@
 
 import React, { useEffect, useMemo, useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
 
 type Brozfolio = {
   slug: string;
@@ -45,18 +46,23 @@ export default function FolioSearch({ onClose }: Props) {
   };
 
   return (
-    <div style={styles.page}>
-      <div style={styles.panel}>
-        <div style={styles.searchBar}>
+    <div className="min-h-screen bg-[#323232] grid place-items-center p-[18px]">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="w-[calc(100vw-36px)] max-w-[1800px] h-[calc(100vh-36px)] bg-[#E14A3A] rounded-[22px] p-[18px] relative shadow-[0_20px_90px_rgba(0,0,0,0.45)] overflow-hidden tracking-[0.5px]"
+      >
+        <div className="h-[54px] rounded-[14px] bg-[#232326] flex items-center px-[14px] gap-[10px]">
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="search by name..."
-            style={styles.input}
+            className="flex-1 border-none outline-none bg-transparent text-[rgba(255,255,255,0.92)] text-[16px] tracking-[0.6px]"
             autoComplete="off"
             spellCheck={false}
           />
-          <div style={styles.searchIconWrap}>
+          <div className="w-[40px] h-[40px] rounded-[12px] grid place-items-center bg-[rgba(255,255,255,0.06)]">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path
                 d="M10.5 19a8.5 8.5 0 1 1 0-17 8.5 8.5 0 0 1 0 17Z"
@@ -73,141 +79,43 @@ export default function FolioSearch({ onClose }: Props) {
           </div>
         </div>
 
-        <div style={styles.resultsArea}>
+        <div className="mt-[16px] h-[calc(100%-54px-16px)] overflow-auto pr-[4px]">
           {results.length === 0 ? (
-            <div style={styles.empty}>No matches</div>
+            <div className="text-[rgba(255,255,255,0.9)] font-semibold p-[12px]">No matches</div>
           ) : (
-            <div style={{ ...styles.gridBase, ...(isMobile ? styles.gridMobile : styles.gridDesktop) }}>
-              {results.map((item) => (
-                <button
-                  key={item.slug}
-                  onClick={() => openFolio(item)}
-                  style={styles.card}
-                  type="button"
-                >
-                  <img src={item.img} alt={item.name} style={styles.avatar} />
-                  <div style={styles.name}>{item.name}</div>
-                </button>
-              ))}
+            <div className={`grid gap-[14px] items-stretch ${isMobile ? 'grid-cols-2' : 'grid-cols-5'}`}>
+              <AnimatePresence mode="popLayout">
+                {results.map((item, idx) => (
+                  <motion.button
+                    layout
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ delay: idx * 0.05 }}
+                    key={item.slug}
+                    onClick={() => openFolio(item)}
+                    className="w-full h-[95%] rounded-[18px] border-none bg-[#323232] cursor-pointer flex flex-col items-center p-[12px] group"
+                    type="button"
+                  >
+                    <div className="w-full aspect-square rounded-[16px] overflow-hidden">
+                      <img src={item.img} alt={item.name} className="w-full h-full object-cover bg-[rgba(0,0,0,0.15)] group-hover:scale-110 transition-transform duration-500" />
+                    </div>
+                    <div className="mt-[2px] font-extrabold text-[rgba(255,255,255,0.95)] text-[3.7vh] tracking-[1px] font-anton">
+                      {item.name}
+                    </div>
+                  </motion.button>
+                ))}
+              </AnimatePresence>
             </div>
           )}
         </div>
 
         {onClose && (
-          <button type="button" onClick={onClose} style={styles.closeBtn}>
+          <button type="button" onClick={onClose} className="absolute right-[14px] bottom-[14px] border-none rounded-[12px] py-[10px] px-[14px] bg-[rgba(0,0,0,0.28)] text-[rgba(255,255,255,0.95)] cursor-pointer font-anton">
             Back
           </button>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 }
-
-const styles: Record<string, React.CSSProperties> = {
-  page: {
-    minHeight: "100vh",
-    background: "#323232",
-    display: "grid",
-    placeItems: "center",
-    padding: 18,
-  },
-  panel: {
-    width: "calc(100vw - 36px)",
-    maxWidth: 1800,
-    height: "calc(100vh - 36px)",
-    background: "#E14A3A",
-    borderRadius: 22,
-    padding: 18,
-    position: "relative",
-    boxShadow: "0 20px 90px rgba(0,0,0,0.45)",
-    overflow: "hidden",
-    letterSpacing: "0.5px",
-  },
-  searchBar: {
-    height: 54,
-    borderRadius: 14,
-    background: "#232326",
-    display: "flex",
-    alignItems: "center",
-    padding: "0 10px 0 14px",
-    gap: 10,
-  },
-  input: {
-    flex: 1,
-    border: "none",
-    outline: "none",
-    background: "transparent",
-    color: "rgba(255,255,255,0.92)",
-    fontSize: 16,
-    letterSpacing: "0.6px",
-  },
-  searchIconWrap: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    display: "grid",
-    placeItems: "center",
-    background: "rgba(255,255,255,0.06)",
-  },
-  resultsArea: {
-    marginTop: 16,
-    height: "calc(100% - 54px - 16px)",
-    overflow: "auto",
-    paddingRight: 4,
-  },
-  gridBase: {
-    display: "grid",
-    gap: 14,
-    alignItems: "stretch",
-  },
-  gridDesktop: {
-    gridTemplateColumns: "repeat(5, minmax(0, 1fr))",
-  },
-  gridMobile: {
-    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-  },
-  card: {
-    width: "100%",
-    height: "95%",
-    borderRadius: 18,
-    border: "none",
-    background: "#323232",
-    cursor: "pointer",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    padding: 12,
-  },
-  avatar: {
-    width: "100%",
-    aspectRatio: "1 / 1",
-    borderRadius: 16,
-    objectFit: "cover",
-    background: "rgba(0,0,0,0.15)",
-  },
-  name: {
-    marginTop: 2,
-    fontWeight: 800,
-    color: "rgba(255,255,255,0.95)",
-    fontSize: "3.7vh",
-    letterSpacing:"1px",
-    fontFamily: "'Anton', sans-serif",
-  },
-  empty: {
-    color: "rgba(255,255,255,0.9)",
-    fontWeight: 600,
-    padding: 12,
-  },
-  closeBtn: {
-    position: "absolute",
-    right: 14,
-    bottom: 14,
-    border: "none",
-    borderRadius: 12,
-    padding: "10px 14px",
-    background: "rgba(0,0,0,0.28)",
-    color: "rgba(255,255,255,0.95)",
-    cursor: "pointer",
-    fontFamily: "'Anton', sans-serif",
-  },
-};

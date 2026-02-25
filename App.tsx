@@ -1,6 +1,7 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import { ArrowUpRight, Mail } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import FolioSearch from "./FolioSearch";
 
 /**
@@ -37,29 +38,37 @@ const BentoCard: React.FC<BentoCardProps> = ({
   ...props
 }) => {
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
       {...props}
-      className={`relative rounded-[16px] overflow-hidden transition-all duration-500 shadow-2xl ${className}`}
-      style={{ backgroundColor: BRAND_RED, ...style }}
+      className={`relative rounded-[16px] overflow-hidden transition-all duration-500 shadow-2xl bg-[#ff4e46] ${className}`}
+      style={style}
     >
       {children}
-    </div>
+    </motion.div>
   );
 };
 
 const FlipCard: React.FC<{ className?: string }> = ({ className = "" }) => {
+  const [isFlipped, setIsFlipped] = useState(false);
+
   return (
-    <div className={`group [perspective:1000px] ${className}`}>
-      <div className="relative h-full w-full transition-all duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
+    <div 
+      className={`group [perspective:1000px] cursor-pointer hover:scale-[1.01] transition-transform duration-500 ${className}`}
+      onClick={() => setIsFlipped(!isFlipped)}
+    >
+      <div className={`relative h-full w-full transition-all duration-700 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}>
         {/* Front Side */}
         <div className="absolute inset-0 [backface-visibility:hidden]">
           <BentoCard className="h-full w-full flex items-end p-6 md:p-8">
             <div className="absolute top-4 right-4 md:top-6 md:right-6 z-30">
-              <div className="rounded-full p-2 transition-transform duration-500 group-hover:rotate-45 shadow-lg" style={{ backgroundColor: BRAND_BLACK }}>
-                <ArrowUpRight style={{ color: BRAND_RED }} className="w-5 h-5 md:w-6 md:h-6" />
+              <div className="rounded-full p-2 transition-transform duration-500 group-hover:rotate-45 shadow-lg bg-[#323232]">
+                <ArrowUpRight className="w-5 h-5 md:w-6 md:h-6 text-[#ff4e46]" />
               </div>
             </div>
-            <span className="text-anton text-6xl md:text-8xl lg:text-[7rem] xl:text-[8rem] leading-[0.8] lowercase select-none tracking-tight" style={{ color: BRAND_BLACK }}>
+            <span className="text-anton text-6xl md:text-8xl lg:text-[7rem] xl:text-[8rem] leading-[0.8] lowercase select-none tracking-tight text-[#323232]">
               .links
             </span>
           </BentoCard>
@@ -77,12 +86,12 @@ const FlipCard: React.FC<{ className?: string }> = ({ className = "" }) => {
                   <a 
                     key={social.id}
                     href={social.href}
+                    onClick={(e) => e.stopPropagation()}
                     target={social.href.startsWith('http') ? "_blank" : undefined}
                     rel={social.href.startsWith('http') ? "noopener noreferrer" : undefined}
-                    className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center rounded-[12px] transition-all duration-300 hover:scale-110 active:scale-95 shadow-lg"
-                    style={{ backgroundColor: BRAND_BLACK }}
+                    className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center rounded-[12px] transition-all duration-300 hover:scale-110 active:scale-95 shadow-lg bg-[#323232]"
                   >
-                    <social.icon className="w-8 h-8 md:w-10 md:h-10" style={{ color: BRAND_RED }} />
+                    <social.icon className="w-8 h-8 md:w-10 md:h-10 text-[#ff4e46]" />
                   </a>
                 ))}
              </div>
@@ -132,8 +141,7 @@ if (page === "folio") {
 
   return (
     <div 
-      className={`${isMobile ? 'min-h-screen py-8' : 'h-screen'} w-screen flex items-center justify-center p-4 md:p-8 overflow-hidden font-anton`} 
-      style={{ backgroundColor: BRAND_BLACK }}
+      className={`${isMobile ? 'min-h-screen py-8' : 'h-screen'} w-screen flex items-center justify-center p-4 md:p-8 overflow-hidden font-anton bg-[#323232]`} 
     >
       <div 
         className={`w-full h-full max-w-[1800px] grid gap-4 md:gap-8 
@@ -161,10 +169,8 @@ if (page === "folio") {
         </BentoCard>
 
         {/* Top Right: Design Accent Area */}
-        <BentoCard className="md:col-span-4 row-span-1 md:row-span-1 flex items-end p-10">
-          <div className="relative w-full h-full">
-            <div className="absolute top-0 right-0 border-t-[6px] border-r-[6px] w-16 h-16 opacity-30" style={{ borderColor: BRAND_BLACK }}></div>
-            <div className="absolute bottom-0 left-0 border-b-[6px] border-l-[6px] w-16 h-16 opacity-30" style={{ borderColor: BRAND_BLACK }}></div>
+        <BentoCard className="md:col-span-4 row-span-1 md:row-span-1 flex items-center justify-center p-10 group">
+          <div className="relative w-full h-full flex items-center justify-center">
           </div>
         </BentoCard>
 
@@ -172,18 +178,25 @@ if (page === "folio") {
         <FlipCard className="md:col-span-2 row-span-1 md:row-span-1" />
 
         {/* Bottom Center: Repetitive Logo Pattern */}
-        <BentoCard className="md:col-span-2 row-span-1 md:row-span-1">
-          <div 
-            className="w-full h-full opacity-70 group-hover:opacity-100 transition-opacity duration-500"
+        <BentoCard className="md:col-span-2 row-span-1 md:row-span-1 group">
+          <motion.div 
+            animate={{ 
+              backgroundPosition: ['0px 0px', '80px 80px'] 
+            }}
+            transition={{ 
+              duration: 10, 
+              repeat: Infinity, 
+              ease: "linear" 
+            }}
+            className="w-full h-full opacity-40 group-hover:opacity-100 transition-opacity duration-500"
             style={{
               backgroundImage: `url(${PATTERN_SRC})`,
               backgroundSize: '80px',
               backgroundRepeat: 'repeat',
-              backgroundPosition: '-20px -20px',
               imageRendering: 'auto',
-              filter: 'grayscale(1) brightness(0.1)' 
+              filter: 'grayscale(1) brightness(0.2)' 
             }}
-          ></div>
+          ></motion.div>
         </BentoCard>
 
         {/* Bottom Right: Folio */}
@@ -193,11 +206,11 @@ if (page === "folio") {
                   setPage("folio");}}
                 className="md:col-span-2 row-span-1 md:row-span-1 flex items-end p-6 md:p-8 group hover:scale-[1.01] cursor-pointer">
           <div className="absolute top-4 right-4 md:top-6 md:right-6 z-30">
-            <div className="rounded-full p-2 transition-transform duration-500 group-hover:rotate-45 shadow-lg" style={{ backgroundColor: BRAND_BLACK }}>
-              <ArrowUpRight style={{ color: BRAND_RED }} className="w-5 h-5 md:w-6 md:h-6" />
+            <div className="rounded-full p-2 transition-transform duration-500 group-hover:rotate-45 shadow-lg bg-[#323232]">
+              <ArrowUpRight className="w-5 h-5 md:w-6 md:h-6 text-[#ff4e46]" />
             </div>
           </div>
-          <span className="text-anton text-6xl md:text-8xl lg:text-[7rem] xl:text-[8rem] leading-[0.8] lowercase select-none tracking-tight" style={{ color: BRAND_BLACK }}>
+          <span className="text-anton text-6xl md:text-8xl lg:text-[7rem] xl:text-[8rem] leading-[0.8] lowercase select-none tracking-tight text-[#323232]">
             .folio
           </span>
         </BentoCard>
