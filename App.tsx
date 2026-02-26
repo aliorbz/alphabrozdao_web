@@ -56,7 +56,7 @@ const FlipCard: React.FC<{ className?: string }> = ({ className = "" }) => {
 
   return (
     <div 
-      className={`group [perspective:1000px] cursor-pointer hover:scale-[1.01] transition-transform duration-500 ${className}`}
+      className={`group [perspective:2000px] cursor-pointer hover:scale-[1.01] transition-transform duration-500 z-10 hover:z-50 ${className}`}
       onClick={() => setIsFlipped(!isFlipped)}
     >
       <div className={`relative h-full w-full transition-all duration-700 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}>
@@ -141,10 +141,10 @@ if (page === "folio") {
 
   return (
     <div 
-      className="min-h-screen md:h-screen w-screen flex items-center justify-center p-4 md:p-8 overflow-hidden font-anton bg-[#323232]" 
+      className="min-h-screen md:h-screen w-screen flex items-center justify-center p-4 md:p-8 overflow-x-hidden md:overflow-hidden font-anton bg-[#323232]" 
     >
       <div 
-        className="w-full h-full max-w-[1800px] grid grid-cols-2 md:grid-cols-6 md:grid-rows-2 gap-4 md:gap-8 overflow-y-auto md:overflow-hidden"
+        className="w-full h-full max-w-[1800px] grid grid-cols-2 md:grid-cols-6 md:grid-rows-2 gap-4 md:gap-8 overflow-visible"
       >
         
         {/* Top Left: Main Animated Logo Card */}
