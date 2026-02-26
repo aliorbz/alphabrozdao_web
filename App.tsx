@@ -76,22 +76,22 @@ const FlipCard: React.FC<{ className?: string }> = ({ className = "" }) => {
 
         {/* Back Side */}
         <div className="absolute inset-0 h-full w-full [transform:rotateY(180deg)] [backface-visibility:hidden]">
-          <BentoCard className="h-full w-full flex items-center justify-center p-8">
-             <div className="flex gap-4 md:gap-6">
+          <BentoCard className="h-full w-full flex items-center justify-center p-4 md:p-8">
+             <div className="grid grid-cols-2 gap-3 md:flex md:gap-6 items-center justify-center">
                 {[
                   { id: 'x', icon: XIcon, href: 'https://x.com/alphabrozdao' },
                   { id: 'discord', icon: DiscordIcon, href: 'https://discord.gg/gYEerfkxTK' },
                   { id: 'mail', icon: Mail, href: 'mailto:alphabrozdao@gmail.com' }
-                ].map((social) => (
+                ].map((social, idx) => (
                   <a 
                     key={social.id}
                     href={social.href}
                     onClick={(e) => e.stopPropagation()}
                     target={social.href.startsWith('http') ? "_blank" : undefined}
                     rel={social.href.startsWith('http') ? "noopener noreferrer" : undefined}
-                    className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center rounded-[12px] transition-all duration-300 hover:scale-110 active:scale-95 shadow-lg bg-[#323232]"
+                    className={`${idx === 0 ? 'col-span-2 justify-self-center' : 'col-span-1'} w-14 h-14 md:w-20 md:h-20 flex items-center justify-center rounded-[12px] transition-all duration-300 hover:scale-110 active:scale-95 shadow-lg bg-[#323232]`}
                   >
-                    <social.icon className="w-8 h-8 md:w-10 md:h-10 text-[#ff4e46]" />
+                    <social.icon className="w-7 h-7 md:w-10 md:h-10 text-[#ff4e46]" />
                   </a>
                 ))}
              </div>
