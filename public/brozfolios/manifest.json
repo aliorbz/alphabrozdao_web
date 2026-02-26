@@ -11,5 +11,11 @@
     "name": "ALI",
     "img": "https://pbs.twimg.com/profile_images/1801955577763094529/5qtIvl5X_400x400.jpg",
     "url": "https://aliorbz.xyz/"
+  },
+  {
+    "slug": "whyshahed",
+    "name": "SHAHED",
+    "img": "https://i.ibb.co.com/TMn8vByD/s-Dg-AZe-GV-400x400.jpg",
+    "url": "https://whyshahed.vercel.app/"
   }
 ]
