@@ -68,7 +68,7 @@ const FlipCard: React.FC<{ className?: string }> = ({ className = "" }) => {
                 <ArrowUpRight className="w-5 h-5 md:w-6 md:h-6 text-[#ff4e46]" />
               </div>
             </div>
-            <span className="text-anton text-6xl md:text-8xl lg:text-[7rem] xl:text-[8rem] leading-[0.8] lowercase select-none tracking-tight text-[#323232]">
+            <span className="text-anton text-5xl md:text-8xl lg:text-[7rem] xl:text-[8rem] leading-[0.8] lowercase select-none tracking-tight text-[#323232]">
               .links
             </span>
           </BentoCard>
@@ -141,18 +141,14 @@ if (page === "folio") {
 
   return (
     <div 
-      className={`${isMobile ? 'min-h-screen py-8' : 'h-screen'} w-screen flex items-center justify-center p-4 md:p-8 overflow-hidden font-anton bg-[#323232]`} 
+      className="min-h-screen md:h-screen w-screen flex items-center justify-center p-4 md:p-8 overflow-hidden font-anton bg-[#323232]" 
     >
       <div 
-        className={`w-full h-full max-w-[1800px] grid gap-4 md:gap-8 
-          ${isMobile 
-            ? 'grid-cols-1 auto-rows-[250px]' 
-            : 'grid-cols-6 grid-rows-2'
-          }`}
+        className="w-full h-full max-w-[1800px] grid grid-cols-2 md:grid-cols-6 md:grid-rows-2 gap-4 md:gap-8 overflow-y-auto md:overflow-hidden"
       >
         
         {/* Top Left: Main Animated Logo Card */}
-        <BentoCard className="md:col-span-2 row-span-2 md:row-span-1 flex items-center justify-center relative bg-black">
+        <BentoCard className="col-span-2 aspect-square md:aspect-auto md:col-span-2 md:row-span-1 flex items-center justify-center relative bg-black">
           <div className="absolute inset-0 w-full h-full overflow-hidden">
             <video
               ref={videoRef}
@@ -169,16 +165,16 @@ if (page === "folio") {
         </BentoCard>
 
         {/* Top Right: Design Accent Area */}
-        <BentoCard className="md:col-span-4 row-span-1 md:row-span-1 flex items-center justify-center p-10 group">
+        <BentoCard className="col-span-2 h-40 md:h-auto md:col-span-4 md:row-span-1 flex items-center justify-center p-10 group">
           <div className="relative w-full h-full flex items-center justify-center">
           </div>
         </BentoCard>
 
         {/* Bottom Left: Links (Flippable) */}
-        <FlipCard className="md:col-span-2 row-span-1 md:row-span-1" />
+        <FlipCard className="col-span-1 aspect-square md:aspect-auto md:col-span-2 md:row-span-1" />
 
         {/* Bottom Center: Repetitive Logo Pattern */}
-        <BentoCard className="md:col-span-2 row-span-1 md:row-span-1 group">
+        <BentoCard className="hidden md:flex md:col-span-2 md:row-span-1 group">
           <motion.div 
             animate={{ 
               backgroundPosition: ['0px 0px', '80px 80px'] 
@@ -204,13 +200,13 @@ if (page === "folio") {
                 onClick={() => {
                   console.log("folio clicked");
                   setPage("folio");}}
-                className="md:col-span-2 row-span-1 md:row-span-1 flex items-end p-6 md:p-8 group hover:scale-[1.01] cursor-pointer">
+                className="col-span-1 aspect-square md:aspect-auto md:col-span-2 md:row-span-1 flex items-end p-6 md:p-8 group hover:scale-[1.01] cursor-pointer">
           <div className="absolute top-4 right-4 md:top-6 md:right-6 z-30">
             <div className="rounded-full p-2 transition-transform duration-500 group-hover:rotate-45 shadow-lg bg-[#323232]">
               <ArrowUpRight className="w-5 h-5 md:w-6 md:h-6 text-[#ff4e46]" />
             </div>
           </div>
-          <span className="text-anton text-6xl md:text-8xl lg:text-[7rem] xl:text-[8rem] leading-[0.8] lowercase select-none tracking-tight text-[#323232]">
+          <span className="text-anton text-5xl md:text-8xl lg:text-[7rem] xl:text-[8rem] leading-[0.8] lowercase select-none tracking-tight text-[#323232]">
             .folio
           </span>
         </BentoCard>
