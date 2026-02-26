@@ -141,10 +141,10 @@ if (page === "folio") {
 
   return (
     <div 
-      className="min-h-screen md:h-screen w-full flex items-center justify-center p-4 md:p-8 overflow-y-auto md:overflow-hidden font-anton bg-[#323232]" 
+      className="min-h-screen md:h-screen w-screen flex items-center justify-center p-4 md:p-8 overflow-hidden font-anton bg-[#323232]" 
     >
       <div 
-        className="w-full max-w-[500px] md:max-w-[1800px] grid grid-cols-2 md:grid-cols-6 md:grid-rows-2 gap-4 md:gap-8"
+        className="w-full h-full max-w-[1800px] grid grid-cols-2 md:grid-cols-6 md:grid-rows-2 gap-4 md:gap-8 overflow-y-auto md:overflow-hidden"
       >
         
         {/* Top Left: Main Animated Logo Card */}
