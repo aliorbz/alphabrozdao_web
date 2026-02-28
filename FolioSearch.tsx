@@ -102,7 +102,7 @@ export default function FolioSearch({ onClose }: Props) {
                     transition={{ delay: idx * 0.05 }}
                     key={item.slug}
                     onClick={() => openFolio(item)}
-                    className="flex-shrink-0 w-[180px] md:w-[240px] h-full rounded-[18px] border-none bg-[#323232] cursor-pointer relative group overflow-hidden"
+                    className="flex-shrink-0 w-[calc(100vw-72px)] md:w-[240px] h-full rounded-[18px] border-none bg-[#323232] cursor-pointer relative group overflow-hidden"
                     type="button"
                   >
                     <div className="absolute inset-0">
