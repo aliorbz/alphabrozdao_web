@@ -47,61 +47,77 @@ export default function FolioSearch({ onClose }: Props) {
 
   return (
     <div className="min-h-screen bg-[#323232] grid place-items-center p-[18px]">
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
+      <div 
         className="w-[calc(100vw-36px)] max-w-[1800px] h-[calc(100vh-36px)] bg-[#E14A3A] rounded-[22px] p-[18px] relative shadow-[0_20px_90px_rgba(0,0,0,0.45)] overflow-hidden tracking-[0.5px]"
       >
-        <div className="h-[54px] rounded-[14px] bg-[#232326] flex items-center px-[14px] gap-[10px]">
-          <input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="search by name..."
-            className="flex-1 border-none outline-none bg-transparent text-[rgba(255,255,255,0.92)] text-[16px] tracking-[0.6px]"
-            autoComplete="off"
-            spellCheck={false}
-          />
-          <div className="w-[40px] h-[40px] rounded-[12px] grid place-items-center bg-[rgba(255,255,255,0.06)]">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path
-                d="M10.5 19a8.5 8.5 0 1 1 0-17 8.5 8.5 0 0 1 0 17Z"
-                stroke="rgba(255,255,255,0.9)"
-                strokeWidth="2"
-              />
-              <path
-                d="M16.5 16.5 22 22"
-                stroke="rgba(255,255,255,0.9)"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
+        <div className="h-[48px] flex items-center gap-[10px]">
+          <div className="flex-1 h-full rounded-[12px] bg-[#232326] flex items-center px-[12px] gap-[8px]">
+            <input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="search by name..."
+              className="flex-1 border-none outline-none bg-transparent text-[rgba(255,255,255,0.92)] text-[14px] tracking-[0.6px]"
+              autoComplete="off"
+              spellCheck={false}
+            />
+            <div className="w-[32px] h-[32px] rounded-[10px] grid place-items-center bg-[rgba(255,255,255,0.06)]">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M10.5 19a8.5 8.5 0 1 1 0-17 8.5 8.5 0 0 1 0 17Z"
+                  stroke="rgba(255,255,255,0.9)"
+                  strokeWidth="2.5"
+                />
+                <path
+                  d="M16.5 16.5 22 22"
+                  stroke="rgba(255,255,255,0.9)"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </div>
           </div>
+          {onClose && (
+            <button 
+              type="button" 
+              onClick={onClose} 
+              className="h-full border-none rounded-[12px] px-[16px] bg-[#232326] text-[rgba(255,255,255,0.95)] cursor-pointer font-anton hover:bg-[#323232] transition-colors text-[14px]"
+            >
+              Back
+            </button>
+          )}
         </div>
 
-        <div className="mt-[16px] h-[calc(100%-54px-16px)] overflow-auto pr-[4px]">
+        <div className="mt-[12px] h-[calc(100%-48px-12px)] overflow-x-auto overflow-y-hidden custom-scrollbar">
           {results.length === 0 ? (
             <div className="text-[rgba(255,255,255,0.9)] font-semibold p-[12px]">No matches</div>
           ) : (
-            <div className={`grid gap-[14px] items-stretch ${isMobile ? 'grid-cols-2' : 'grid-cols-5'}`}>
+            <div className="flex gap-[14px] h-full pb-1">
               <AnimatePresence mode="popLayout">
                 {results.map((item, idx) => (
                   <motion.button
                     layout
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, scale: 0.8 }}
                     transition={{ delay: idx * 0.05 }}
                     key={item.slug}
                     onClick={() => openFolio(item)}
-                    className="w-full h-[95%] rounded-[18px] border-none bg-[#323232] cursor-pointer flex flex-col items-center p-[12px] group"
+                    className="flex-shrink-0 w-[180px] md:w-[240px] h-full rounded-[18px] border-none bg-[#323232] cursor-pointer relative group overflow-hidden"
                     type="button"
                   >
-                    <div className="w-full aspect-square rounded-[16px] overflow-hidden">
-                      <img src={item.img} alt={item.name} className="w-full h-full object-cover bg-[rgba(0,0,0,0.15)] group-hover:scale-110 transition-transform duration-500" />
+                    <div className="absolute inset-0">
+                      <img 
+                        src={item.img} 
+                        alt={item.name} 
+                        className="w-full h-full object-cover bg-[rgba(0,0,0,0.15)] group-hover:scale-110 transition-transform duration-700" 
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500" />
                     </div>
-                    <div className="mt-[2px] font-extrabold text-[rgba(255,255,255,0.95)] text-[3.7vh] tracking-[1px] font-anton">
-                      {item.name}
+                    
+                    <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
+                      <div className="font-extrabold text-[rgba(255,255,255,0.95)] text-[5.5vh] md:text-[8vh] leading-[0.8] tracking-[2px] font-anton uppercase break-words text-left drop-shadow-2xl">
+                        {item.name}
+                      </div>
                     </div>
                   </motion.button>
                 ))}
@@ -109,13 +125,7 @@ export default function FolioSearch({ onClose }: Props) {
             </div>
           )}
         </div>
-
-        {onClose && (
-          <button type="button" onClick={onClose} className="absolute right-[14px] bottom-[14px] border-none rounded-[12px] py-[10px] px-[14px] bg-[rgba(0,0,0,0.28)] text-[rgba(255,255,255,0.95)] cursor-pointer font-anton">
-            Back
-          </button>
-        )}
-      </motion.div>
+      </div>
     </div>
   );
 }

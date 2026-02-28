@@ -26,6 +26,41 @@ const VIDEO_URL = "https://res.cloudinary.com/dw2vuswnh/video/upload/v1/lv_0_202
 const PATTERN_SRC = "https://i.ibb.co.com/LDDWcBFs/Picsart-26-01-17-18-12-50-427.png";
 const BRAND_RED = "#ff4e46";
 const BRAND_BLACK = "#323232";
+const LOADING_LOGO = "https://i.ibb.co.com/4RrTrG5j/Picsart-26-01-19-16-24-22-721.png";
+
+const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
+  useEffect(() => {
+    const timer = setTimeout(onComplete, 2000);
+    return () => clearTimeout(timer);
+  }, [onComplete]);
+
+  return (
+    <motion.div
+      className="fixed inset-0 z-[100] bg-[#323232] flex items-center justify-center overflow-hidden"
+      initial={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <motion.img
+        src={LOADING_LOGO}
+        alt="Loading Logo"
+        className="w-12 h-12 md:w-16 md:h-16 object-contain"
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{
+          scale: [0.8, 1.1, 0.9, 1.1, 1],
+          opacity: 1,
+        }}
+        transition={{
+          duration: 1.5,
+          times: [0, 0.2, 0.4, 0.6, 1],
+          repeat: Infinity,
+          repeatDelay: 0.5,
+          ease: "easeInOut"
+        }}
+      />
+    </motion.div>
+  );
+};
 
 type BentoCardProps = React.HTMLAttributes<HTMLDivElement> & {
   style?: React.CSSProperties;
@@ -39,9 +74,6 @@ const BentoCard: React.FC<BentoCardProps> = ({
 }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
       {...props}
       className={`relative rounded-[16px] overflow-hidden transition-all duration-500 shadow-2xl bg-[#ff4e46] ${className}`}
       style={style}
@@ -105,6 +137,8 @@ const FlipCard: React.FC<{ className?: string }> = ({ className = "" }) => {
 const App: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState<"home" | "folio">("home");
 
   useEffect(() => {
     const checkMobile = () => {
@@ -129,90 +163,126 @@ const App: React.FC = () => {
     };
   }, []);
 
-
-
-const [page, setPage] = useState<"home" | "folio">("home");
-
-if (page === "folio") {
-  return <FolioSearch onClose={() => setPage("home")} />;
-}
-
-
-
   return (
-    <div 
-      className="min-h-screen md:h-screen w-screen flex items-center justify-center p-4 md:p-8 overflow-x-hidden md:overflow-hidden font-anton bg-[#323232]" 
-    >
-      <div 
-        className="w-full h-full max-w-[1800px] grid grid-cols-2 md:grid-cols-6 md:grid-rows-2 gap-4 md:gap-8 overflow-visible"
-      >
-        
-        {/* Top Left: Main Animated Logo Card */}
-        <BentoCard className="col-span-2 aspect-square md:aspect-auto md:col-span-2 md:row-span-1 flex items-center justify-center relative bg-black">
-          <div className="absolute inset-0 w-full h-full overflow-hidden">
-            <video
-              ref={videoRef}
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-cover"
+    <>
+      <AnimatePresence mode="wait">
+        {isLoading && (
+          <LoadingScreen key="loading" onComplete={() => setIsLoading(false)} />
+        )}
+      </AnimatePresence>
+
+      {!isLoading && (
+        <AnimatePresence>
+          {page === "folio" ? (
+            <motion.div
+              key="folio"
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed inset-0 z-50"
             >
-              <source src={VIDEO_URL} type="video/mp4" />
-            </video>
-          </div>
-          <div className="absolute inset-0 bg-[#ff4e46] opacity-10 pointer-events-none"></div>
-        </BentoCard>
+              <FolioSearch onClose={() => setPage("home")} />
+            </motion.div>
+          ) : (
+            <motion.div 
+              key="home"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ x: "-100%", opacity: 0 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+              className="min-h-screen md:h-screen w-screen flex items-center justify-center p-4 md:p-8 overflow-x-hidden md:overflow-hidden font-anton bg-[#323232]" 
+            >
+              <div 
+                className="w-full h-full max-w-[1800px] grid grid-cols-2 md:grid-cols-6 md:grid-rows-2 gap-4 md:gap-8 overflow-visible"
+              >
+                
+                {/* Top Left: Main Animated Logo Card */}
+                <BentoCard className="col-span-2 aspect-square md:aspect-auto md:col-span-2 md:row-span-1 flex items-center justify-center relative bg-black">
+                  <div className="absolute inset-0 w-full h-full overflow-hidden">
+                    <video
+                      ref={videoRef}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-full h-full object-cover"
+                    >
+                      <source src={VIDEO_URL} type="video/mp4" />
+                    </video>
+                  </div>
+                  <div className="absolute inset-0 bg-[#ff4e46] opacity-10 pointer-events-none"></div>
+                </BentoCard>
 
-        {/* Top Right: Design Accent Area */}
-        <BentoCard className="col-span-2 h-40 md:h-auto md:col-span-4 md:row-span-1 flex items-center justify-center p-10 group">
-          <div className="relative w-full h-full flex items-center justify-center">
-          </div>
-        </BentoCard>
+                {/* Top Right: Design Accent Area */}
+                <BentoCard className="col-span-2 h-40 md:h-auto md:col-span-4 md:row-span-1 flex items-center justify-center group overflow-hidden" style={{ containerType: 'size' } as any}>
+                  <div className="relative w-full h-full flex items-center overflow-hidden">
+                    <motion.div
+                      className="flex whitespace-pre"
+                      animate={{ x: ["0%", "-50%"] }}
+                      transition={{
+                        duration: 15,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
+                    >
+                      <span className="text-[#323232] font-anton text-[80cqh] leading-none">
+                        BROZ ARE THE ALPHA{" "}
+                      </span>
+                      <span className="text-[#323232] font-anton text-[80cqh] leading-none">
+                        BROZ ARE THE ALPHA{" "}
+                      </span>
+                    </motion.div>
+                  </div>
+                </BentoCard>
 
-        {/* Bottom Left: Links (Flippable) */}
-        <FlipCard className="col-span-1 aspect-square md:aspect-auto md:col-span-2 md:row-span-1" />
+                {/* Bottom Left: Links (Flippable) */}
+                <FlipCard className="col-span-1 aspect-square md:aspect-auto md:col-span-2 md:row-span-1" />
 
-        {/* Bottom Center: Repetitive Logo Pattern */}
-        <BentoCard className="hidden md:flex md:col-span-2 md:row-span-1 group">
-          <motion.div 
-            animate={{ 
-              backgroundPosition: ['0px 0px', '80px 80px'] 
-            }}
-            transition={{ 
-              duration: 10, 
-              repeat: Infinity, 
-              ease: "linear" 
-            }}
-            className="w-full h-full opacity-40 group-hover:opacity-100 transition-opacity duration-500"
-            style={{
-              backgroundImage: `url(${PATTERN_SRC})`,
-              backgroundSize: '80px',
-              backgroundRepeat: 'repeat',
-              imageRendering: 'auto',
-              filter: 'grayscale(1) brightness(0.2)' 
-            }}
-          ></motion.div>
-        </BentoCard>
+                {/* Bottom Center: Repetitive Logo Pattern */}
+                <BentoCard className="hidden md:flex md:col-span-2 md:row-span-1 group">
+                  <motion.div 
+                    animate={{ 
+                      backgroundPosition: ['0px 0px', '80px 80px'] 
+                    }}
+                    transition={{ 
+                      duration: 10, 
+                      repeat: Infinity, 
+                      ease: "linear" 
+                    }}
+                    className="w-full h-full opacity-40 group-hover:opacity-100 transition-opacity duration-500"
+                    style={{
+                      backgroundImage: `url(${PATTERN_SRC})`,
+                      backgroundSize: '80px',
+                      backgroundRepeat: 'repeat',
+                      imageRendering: 'auto',
+                      filter: 'grayscale(1) brightness(0.2)' 
+                    }}
+                  ></motion.div>
+                </BentoCard>
 
-        {/* Bottom Right: Folio */}
-        <BentoCard
-                onClick={() => {
-                  console.log("folio clicked");
-                  setPage("folio");}}
-                className="col-span-1 aspect-square md:aspect-auto md:col-span-2 md:row-span-1 flex items-end p-6 md:p-8 group hover:scale-[1.01] cursor-pointer">
-          <div className="absolute top-4 right-4 md:top-6 md:right-6 z-30">
-            <div className="rounded-full p-2 transition-transform duration-500 group-hover:rotate-45 shadow-lg bg-[#323232]">
-              <ArrowUpRight className="w-5 h-5 md:w-6 md:h-6 text-[#ff4e46]" />
-            </div>
-          </div>
-          <span className="text-anton text-5xl md:text-8xl lg:text-[7rem] xl:text-[8rem] leading-[0.8] lowercase select-none tracking-tight text-[#323232]">
-            .folio
-          </span>
-        </BentoCard>
+                {/* Bottom Right: Folio */}
+                <BentoCard
+                        onClick={() => {
+                          console.log("folio clicked");
+                          setPage("folio");}}
+                        className="col-span-1 aspect-square md:aspect-auto md:col-span-2 md:row-span-1 flex items-end p-6 md:p-8 group hover:scale-[1.01] cursor-pointer">
+                  <div className="absolute top-4 right-4 md:top-6 md:right-6 z-30">
+                    <div className="rounded-full p-2 transition-transform duration-500 group-hover:rotate-45 shadow-lg bg-[#323232]">
+                      <ArrowUpRight className="w-5 h-5 md:w-6 md:h-6 text-[#ff4e46]" />
+                    </div>
+                  </div>
+                  <span className="text-anton text-5xl md:text-8xl lg:text-[7rem] xl:text-[8rem] leading-[0.8] lowercase select-none tracking-tight text-[#323232]">
+                    .folio
+                  </span>
+                </BentoCard>
 
-      </div>
-    </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      )}
+    </>
   );
 };
 
