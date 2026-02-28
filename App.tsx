@@ -26,7 +26,7 @@ const VIDEO_URL = "https://res.cloudinary.com/dw2vuswnh/video/upload/v1/lv_0_202
 const PATTERN_SRC = "https://i.ibb.co.com/LDDWcBFs/Picsart-26-01-17-18-12-50-427.png";
 const BRAND_RED = "#ff4e46";
 const BRAND_BLACK = "#323232";
-const LOADING_LOGO = "https://i.ibb.co.com/4RrTrG5j/Picsart-26-01-19-16-24-22-721.png";
+const LOADING_LOGO = "/logo.svg";
 
 const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
   useEffect(() => {
