@@ -1,6 +1,7 @@
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 type Brozfolio = {
   slug: string;
@@ -17,6 +18,11 @@ export default function FolioSearch({ onClose }: Props) {
   const [all, setAll] = useState<Brozfolio[]>([]);
   const [q, setQ] = useState("");
   const [isMobile, setIsMobile] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [lastActivity, setLastActivity] = useState(Date.now());
+  const autoScrollTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [scrollDirection, setScrollDirection] = useState<"left" | "right">("right");
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -25,12 +31,67 @@ export default function FolioSearch({ onClose }: Props) {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  useEffect(() => {
-    fetch("/brozfolios/manifest.json")
-      .then((r) => r.json())
-      .then((data) => setAll(Array.isArray(data) ? (data as Brozfolio[]) : []))
-      .catch(() => setAll([]));
+  const resetInactivity = useCallback(() => {
+    setLastActivity(Date.now());
+    if (autoScrollTimerRef.current) {
+      clearInterval(autoScrollTimerRef.current);
+      autoScrollTimerRef.current = null;
+    }
   }, []);
+
+  const scrollFolio = useCallback((direction: "left" | "right") => {
+    if (!scrollRef.current) return;
+    const container = scrollRef.current;
+    const cards = container.querySelectorAll('button');
+    if (cards.length === 0) return;
+
+    // Find the card that is currently most visible/centered
+    let currentIdx = 0;
+    let minDiff = Infinity;
+    const containerCenter = container.scrollLeft + container.clientWidth / 2;
+
+    cards.forEach((card, idx) => {
+      const cardCenter = (card as HTMLElement).offsetLeft + (card as HTMLElement).clientWidth / 2;
+      const diff = Math.abs(containerCenter - cardCenter);
+      if (diff < minDiff) {
+        minDiff = diff;
+        currentIdx = idx;
+      }
+    });
+
+    let targetIdx = direction === "right" ? currentIdx + 1 : currentIdx - 1;
+    if (targetIdx < 0) targetIdx = 0;
+    if (targetIdx >= cards.length) targetIdx = cards.length - 1;
+
+    const targetCard = cards[targetIdx] as HTMLElement;
+    container.scrollTo({
+      left: targetCard.offsetLeft - (container.clientWidth - targetCard.clientWidth) / 2,
+      behavior: "smooth"
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!isMobile) return;
+
+    const handleInteraction = () => resetInactivity();
+    const container = scrollRef.current;
+
+    window.addEventListener("mousemove", handleInteraction);
+    window.addEventListener("touchstart", handleInteraction);
+    window.addEventListener("scroll", handleInteraction, true);
+    if (container) {
+      container.addEventListener("scroll", handleInteraction);
+    }
+
+    return () => {
+      window.removeEventListener("mousemove", handleInteraction);
+      window.removeEventListener("touchstart", handleInteraction);
+      window.removeEventListener("scroll", handleInteraction, true);
+      if (container) {
+        container.removeEventListener("scroll", handleInteraction);
+      }
+    };
+  }, [isMobile, resetInactivity]);
 
   const results = useMemo(() => {
     const s = q.trim().toLowerCase();
@@ -39,6 +100,50 @@ export default function FolioSearch({ onClose }: Props) {
       (x) => x.slug.toLowerCase().includes(s) || x.name.toLowerCase().includes(s)
     );
   }, [q, all]);
+
+  useEffect(() => {
+    if (!isMobile || results.length <= 1) return;
+
+    const checkInactivity = () => {
+      const now = Date.now();
+      if (now - lastActivity >= 3000) {
+        if (!autoScrollTimerRef.current) {
+          autoScrollTimerRef.current = setInterval(() => {
+            if (!scrollRef.current) return;
+            const container = scrollRef.current;
+            
+            // Check if we reached the end or start
+            const isAtEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 10;
+            const isAtStart = container.scrollLeft <= 10;
+
+            let nextDirection = scrollDirection;
+            if (isAtEnd) nextDirection = "left";
+            else if (isAtStart) nextDirection = "right";
+
+            if (nextDirection !== scrollDirection) {
+              setScrollDirection(nextDirection);
+            }
+
+            scrollFolio(nextDirection);
+          }, 2000);
+        }
+      }
+    };
+
+    inactivityTimerRef.current = setInterval(checkInactivity, 1000);
+
+    return () => {
+      if (inactivityTimerRef.current) clearInterval(inactivityTimerRef.current);
+      if (autoScrollTimerRef.current) clearInterval(autoScrollTimerRef.current);
+    };
+  }, [isMobile, lastActivity, results.length, scrollDirection, scrollFolio]);
+
+  useEffect(() => {
+    fetch("/brozfolios/manifest.json")
+      .then((r) => r.json())
+      .then((data) => setAll(Array.isArray(data) ? (data as Brozfolio[]) : []))
+      .catch(() => setAll([]));
+  }, []);
 
   const openFolio = (item: Brozfolio) => {
     const destination = item.url || `/brozfolios/${item.slug}`;
@@ -87,11 +192,39 @@ export default function FolioSearch({ onClose }: Props) {
           )}
         </div>
 
-        <div className="mt-[12px] h-[calc(100%-48px-12px)] overflow-x-auto overflow-y-hidden custom-scrollbar">
-          {results.length === 0 ? (
-            <div className="text-[rgba(255,255,255,0.9)] font-semibold p-[12px]">No matches</div>
-          ) : (
-            <div className="flex gap-[14px] h-full pb-1">
+        <div className="mt-[12px] h-[calc(100%-48px-12px)] relative">
+          {isMobile && results.length > 1 && (
+            <>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  resetInactivity();
+                  scrollFolio("left");
+                }}
+                className="absolute left-[-10px] top-1/2 -translate-y-1/2 z-40 w-10 h-10 rounded-full bg-[#323232]/80 flex items-center justify-center text-[#ff4e46] border-none cursor-pointer backdrop-blur-md shadow-xl active:scale-90 transition-transform"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  resetInactivity();
+                  scrollFolio("right");
+                }}
+                className="absolute right-[-10px] top-1/2 -translate-y-1/2 z-40 w-10 h-10 rounded-full bg-[#323232]/80 flex items-center justify-center text-[#ff4e46] border-none cursor-pointer backdrop-blur-md shadow-xl active:scale-90 transition-transform"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+            </>
+          )}
+
+          <div 
+            ref={scrollRef}
+            className="w-full h-full overflow-x-auto overflow-y-hidden custom-scrollbar flex gap-[14px] snap-x snap-mandatory pb-1"
+          >
+            {results.length === 0 ? (
+              <div className="text-[rgba(255,255,255,0.9)] font-semibold p-[12px]">No matches</div>
+            ) : (
               <AnimatePresence mode="popLayout">
                 {results.map((item, idx) => (
                   <motion.button
@@ -102,7 +235,7 @@ export default function FolioSearch({ onClose }: Props) {
                     transition={{ delay: idx * 0.05 }}
                     key={item.slug}
                     onClick={() => openFolio(item)}
-                    className="flex-shrink-0 w-[calc(100vw-72px)] md:w-[240px] h-full rounded-[18px] border-none bg-[#323232] cursor-pointer relative group overflow-hidden"
+                    className="flex-shrink-0 w-[calc(100vw-72px)] md:w-[240px] h-full rounded-[18px] border-none bg-[#323232] cursor-pointer relative group overflow-hidden snap-center"
                     type="button"
                   >
                     <div className="absolute inset-0">
@@ -122,8 +255,8 @@ export default function FolioSearch({ onClose }: Props) {
                   </motion.button>
                 ))}
               </AnimatePresence>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>
