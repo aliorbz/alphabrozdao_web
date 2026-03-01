@@ -244,9 +244,9 @@ const App: React.FC = () => {
                 className="h-full w-full"
               >
                 {/* Page 1: Bento Grid */}
-                <div className="h-screen w-screen flex items-start md:items-center justify-center p-4 md:p-8 overflow-y-auto md:overflow-hidden font-anton scroll-smooth">
+                <div className="h-full w-screen flex items-start md:items-center justify-center p-4 md:p-8 overflow-y-auto md:overflow-hidden font-anton scroll-smooth">
                   <div 
-                    className="w-full h-fit md:h-full max-w-[1800px] grid grid-cols-2 md:grid-cols-6 md:grid-rows-2 gap-4 md:gap-8 pt-0 pb-32 md:py-0 overflow-visible"
+                    className="w-full h-fit md:h-full max-w-[1800px] grid grid-cols-2 md:grid-cols-6 md:grid-rows-2 gap-4 md:gap-8 pt-0 pb-4 md:py-0 overflow-visible"
                   >
                     
                     {/* Top Left: Main Animated Logo Card */}
@@ -338,12 +338,12 @@ const App: React.FC = () => {
                 {/* Page 2: Full Screen Video */}
                 <div 
                   onClick={() => setPage("home")}
-                  className="h-screen w-screen bg-black relative overflow-hidden cursor-pointer"
+                  className="h-full w-screen bg-black relative overflow-hidden cursor-pointer"
                 >
-                  <div className="absolute inset-0 pointer-events-none flex items-center justify-center overflow-hidden">
+                  <div className="absolute inset-0 pointer-events-none overflow-hidden">
                     <iframe
                       src="https://player.cloudinary.com/embed/?cloud_name=dw2vuswnh&public_id=1772383907873_mcawib&autoplay=true&loop=true&muted=true&controls=false"
-                      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[177.77vh] min-w-full h-[56.25vw] min-h-full border-none scale-110 md:scale-100"
+                      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180vh] h-full min-w-full border-none"
                       allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
                       title="Alpha Broz Video"
                     />
