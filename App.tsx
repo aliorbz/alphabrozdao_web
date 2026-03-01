@@ -347,6 +347,8 @@ const App: React.FC = () => {
                       allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
                       title="Alpha Broz Video"
                     />
+                    {/* Mobile-focused overlay to hide player UI flashes during transition */}
+                    <div className={`absolute inset-0 bg-black transition-opacity duration-700 pointer-events-none ${page === "video" ? 'opacity-0' : 'opacity-100'}`} />
                   </div>
 
                   {/* Typing Animation Overlay */}
