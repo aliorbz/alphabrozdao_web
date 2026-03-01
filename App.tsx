@@ -185,15 +185,11 @@ const App: React.FC = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState<"home" | "folio" | "video">("home");
-  const [videoReady, setVideoReady] = useState(false);
+  const [fullVideoReady, setFullVideoReady] = useState(false);
 
   useEffect(() => {
-    if (page === "video") {
-      // Keep overlay for 1.5s to cover any player UI glitches on mobile
-      const timer = setTimeout(() => setVideoReady(true), 1500);
-      return () => clearTimeout(timer);
-    } else {
-      setVideoReady(false);
+    if (page !== "video") {
+      setFullVideoReady(false);
     }
   }, [page]);
 
@@ -352,14 +348,28 @@ const App: React.FC = () => {
                   className="h-full w-screen bg-black relative overflow-hidden cursor-pointer"
                 >
                   <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                    <iframe
-                      src="https://player.cloudinary.com/embed/?cloud_name=dw2vuswnh&public_id=1772383907873_mcawib&autoplay=true&loop=true&muted=true&controls=false"
-                      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[177.77vh] min-w-full h-[56.25vw] min-h-full border-none"
-                      allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
-                      title="Alpha Broz Video"
-                    />
-                    {/* Mobile-focused overlay to hide player UI flashes during transition */}
-                    <div className={`absolute inset-0 bg-black transition-opacity duration-1000 pointer-events-none z-10 ${videoReady ? 'opacity-0' : 'opacity-100'}`} />
+                    <video
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      onLoadedData={() => setFullVideoReady(true)}
+                      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[177.77vh] min-w-full h-[56.25vw] min-h-full object-cover"
+                    >
+                      <source src="https://res.cloudinary.com/dw2vuswnh/video/upload/1772383907873_mcawib.mp4" type="video/mp4" />
+                    </video>
+                    {/* Fade-in overlay that only disappears when video is actually loaded */}
+                    <AnimatePresence>
+                      {!fullVideoReady && (
+                        <motion.div 
+                          key="video-overlay"
+                          initial={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.8 }}
+                          className="absolute inset-0 bg-black pointer-events-none z-10" 
+                        />
+                      )}
+                    </AnimatePresence>
                   </div>
 
                   {/* Typing Animation Overlay */}
