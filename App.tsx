@@ -185,6 +185,17 @@ const App: React.FC = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState<"home" | "folio" | "video">("home");
+  const [videoReady, setVideoReady] = useState(false);
+
+  useEffect(() => {
+    if (page === "video") {
+      // Keep overlay for 1.5s to cover any player UI glitches on mobile
+      const timer = setTimeout(() => setVideoReady(true), 1500);
+      return () => clearTimeout(timer);
+    } else {
+      setVideoReady(false);
+    }
+  }, [page]);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -348,7 +359,7 @@ const App: React.FC = () => {
                       title="Alpha Broz Video"
                     />
                     {/* Mobile-focused overlay to hide player UI flashes during transition */}
-                    <div className={`absolute inset-0 bg-black transition-opacity duration-700 pointer-events-none ${page === "video" ? 'opacity-0' : 'opacity-100'}`} />
+                    <div className={`absolute inset-0 bg-black transition-opacity duration-1000 pointer-events-none z-10 ${videoReady ? 'opacity-0' : 'opacity-100'}`} />
                   </div>
 
                   {/* Typing Animation Overlay */}
