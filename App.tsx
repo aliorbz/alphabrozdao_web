@@ -244,13 +244,13 @@ const App: React.FC = () => {
                 className="h-full w-full"
               >
                 {/* Page 1: Bento Grid */}
-                <div className="h-screen w-screen flex items-center justify-center p-4 md:p-8 overflow-hidden font-anton">
+                <div className="h-screen w-screen flex items-start md:items-center justify-center p-4 md:p-8 overflow-y-auto md:overflow-hidden font-anton">
                   <div 
-                    className="w-full h-full max-w-[1800px] grid grid-cols-2 md:grid-cols-6 md:grid-rows-2 gap-4 md:gap-8 overflow-visible"
+                    className="w-full h-fit md:h-full max-w-[1800px] grid grid-cols-2 md:grid-cols-6 md:grid-rows-2 gap-4 md:gap-8 py-4 md:py-0 overflow-visible"
                   >
                     
                     {/* Top Left: Main Animated Logo Card */}
-                    <BentoCard className="col-span-2 aspect-square md:aspect-auto md:col-span-2 md:row-span-1 flex items-center justify-center relative bg-black">
+                    <BentoCard className="col-span-2 aspect-square md:aspect-auto md:col-span-2 md:row-span-1 flex items-center justify-center relative bg-black order-1">
                       <div className="absolute inset-0 w-full h-full overflow-hidden">
                         <video
                           ref={videoRef}
@@ -267,7 +267,7 @@ const App: React.FC = () => {
                     </BentoCard>
 
                     {/* Top Right: Design Accent Area */}
-                    <BentoCard className="col-span-2 h-40 md:h-auto md:col-span-4 md:row-span-1 flex items-center justify-center group overflow-hidden" style={{ containerType: 'size' } as any}>
+                    <BentoCard className="col-span-2 h-40 md:h-auto md:col-span-4 md:row-span-1 flex items-center justify-center group overflow-hidden order-2" style={{ containerType: 'size' } as any}>
                       <div className="relative w-full h-full flex items-center overflow-hidden">
                         <motion.div
                           className="flex whitespace-pre"
@@ -289,12 +289,12 @@ const App: React.FC = () => {
                     </BentoCard>
 
                     {/* Bottom Left: Links (Flippable) */}
-                    <FlipCard className="col-span-1 aspect-square md:aspect-auto md:col-span-2 md:row-span-1" />
+                    <FlipCard className="col-span-1 aspect-square md:aspect-auto md:col-span-2 md:row-span-1 order-3" />
 
                     {/* Bottom Center: Repetitive Logo Pattern */}
                     <BentoCard 
                       onClick={() => setPage("video")}
-                      className="hidden md:flex md:col-span-2 md:row-span-1 group cursor-pointer hover:scale-[1.01]"
+                      className="flex col-span-2 h-40 md:h-auto md:col-span-2 md:row-span-1 order-5 md:order-4 group cursor-pointer hover:scale-[1.01]"
                     >
                       <motion.div 
                         animate={{ 
@@ -321,7 +321,7 @@ const App: React.FC = () => {
                             onClick={() => {
                               console.log("folio clicked");
                               setPage("folio");}}
-                            className="col-span-1 aspect-square md:aspect-auto md:col-span-2 md:row-span-1 flex items-end p-6 md:p-8 group hover:scale-[1.01] cursor-pointer">
+                            className="col-span-1 aspect-square md:aspect-auto md:col-span-2 md:row-span-1 flex items-end p-6 md:p-8 group hover:scale-[1.01] cursor-pointer order-4 md:order-5">
                       <div className="absolute top-4 right-4 md:top-6 md:right-6 z-30">
                         <div className="rounded-full p-2 transition-transform duration-500 group-hover:rotate-45 shadow-lg bg-[#323232]">
                           <ArrowUpRight className="w-5 h-5 md:w-6 md:h-6 text-[#ff4e46]" />
