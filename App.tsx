@@ -343,7 +343,7 @@ const App: React.FC = () => {
                   <div className="absolute inset-0 pointer-events-none overflow-hidden">
                     <iframe
                       src="https://player.cloudinary.com/embed/?cloud_name=dw2vuswnh&public_id=1772383907873_mcawib&autoplay=true&loop=true&muted=true&controls=false"
-                      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180vh] h-full min-w-full border-none"
+                      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[177.77vh] min-w-full h-[56.25vw] min-h-full border-none"
                       allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
                       title="Alpha Broz Video"
                     />
