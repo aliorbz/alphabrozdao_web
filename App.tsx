@@ -182,14 +182,28 @@ const TypingAnimation: React.FC = () => {
 
 const App: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const fullVideoRef = useRef<HTMLVideoElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState<"home" | "folio" | "video">("home");
   const [fullVideoReady, setFullVideoReady] = useState(false);
 
   useEffect(() => {
-    if (page !== "video") {
+    if (page === "video") {
       setFullVideoReady(false);
+      // Reset state and try to play immediately if already loaded
+      if (fullVideoRef.current) {
+        if (fullVideoRef.current.readyState >= 3) {
+          setFullVideoReady(true);
+        }
+        fullVideoRef.current.play().catch(() => {
+          // Fallback for mobile autoplay restrictions
+          window.addEventListener('touchstart', () => fullVideoRef.current?.play(), { once: true });
+        });
+      }
+      // Safety timeout to ensure overlay eventually disappears
+      const timer = setTimeout(() => setFullVideoReady(true), 2000);
+      return () => clearTimeout(timer);
     }
   }, [page]);
 
@@ -349,11 +363,13 @@ const App: React.FC = () => {
                 >
                   <div className="absolute inset-0 pointer-events-none overflow-hidden">
                     <video
+                      ref={fullVideoRef}
                       autoPlay
                       muted
                       loop
                       playsInline
                       onLoadedData={() => setFullVideoReady(true)}
+                      onCanPlay={() => setFullVideoReady(true)}
                       className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[177.77vh] min-w-full h-[56.25vw] min-h-full object-cover"
                     >
                       <source src="https://res.cloudinary.com/dw2vuswnh/video/upload/1772383907873_mcawib.mp4" type="video/mp4" />
